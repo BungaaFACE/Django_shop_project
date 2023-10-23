@@ -1,0 +1,91 @@
+1. django-admin startproject config . --> создание файловой структуры django
+
+2. Редактирование settings.py
+- DEBUG = True --> режим дебага
+- SECRET_KEY = '' --> при необходимости поменять секретный ключ
+- ALLOWED_HOSTS = ['https://testurl.com'] --> при необходимости добавить url страницы
+- LANGUAGE_CODE = 'ru-ru' --> язык django
+- TIME_ZONE = 'Europe/Moscow' --> часовой пояс
+- STATICFILES_DIRS = (BASE_DIR / 'static',) --> дописать путь к файлам статики (js, css, etc)
+
+3. python manage.py startapp main --> создание приложения (отдельной группы для страниц сайта)
+4. Добавить новое приложение в настройки settings.py INSTALLED_APPS = ['main', ...]
+
+5. Создать файл urls.py в папке приложения --> сделать локальный файл с маршрутизацией для приложения
+6. В основном urls.py добавить ссылку на новый файл urls приложения path('', include(('main.urls', 'main'), namespace='main')) --> при обращении 
+на главную страницу сайта будет обращение к файлу main.urls
+6.1 Добавляем поддержку статика в urls.py 
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [...] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+7. В локальный urls добавить отслеживание главной страницы from . import views && urlpatterns = [path('', views.index)] --> при обращении 
+на главную страницу сайта будет использоваться функция index(request) из файла views
+
+8. views.py добавляем from django.http import HttpResponse и в функции index(request) return HttpResponse("<h4>Привет мир!</h4>")
+
+
+### Добавление HTML ###
+1. Создание папки templates внутри папки приложения и внутри создать папку с названием приложения --> хранение html файлов приложения
+# Пояснение папки внутри папки - если в проекте несколько приложений и html хранятся в templates, 
+то django их всех объединяет в одну папку --> один файл html заменит другой с тем же названием (index.html -> index.html) #
+
+2. В templates/main создать index.html
+3. В views.py index(request) вызвать функцию render для рендера html страницы return render(request, 'main/index.html') --> путь указывается от папки templates
+
+### Создание общего шаблона html для повторяющегося кода ### Jinja ###
+### Убираем повторяющийся html код ###
+1. Создать layout.html и заполнить стандартными данными (по типу head etc) --> темплейт для остальных html файлов
+
+### layout.html ###
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ...
+    {% block title %}{%endblock%}
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+    <script src="scripts.js"></script>
+</body>
+...
+###
+
+2. Повторяющийся код пишем в layout.html, а динамические части заменяем на jinja блоки {% block NAME %}{%endblock%}.
+
+### index.html ###
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    <title>Главная страница</title>
+{%endblock%}
+
+{% block body %}
+    <h1>Главная страница</h1>
+    <p>Привет!</p>
+{%endblock%}
+###
+
+3. В index.html наследуемся от темплейта {% extends 'main/layout.html' %} и пишем динамическую часть в тех же блоках, что и в лейауте
+
+{% block body %}
+    <h1>Главная страница</h1>
+    <p>Привет!</p>
+
+    {% include 'main/test_include.html'   %}
+
+{%endblock%}
+
+4*. Можно также вкладывать другие html файлы {% include 'main/test_include.html'   %}
+
+### Подключение bootstrap etc ###
+## LINK ##
+1. CSS - в head прописываем <link rel="stylesheet" type="text/css" href="link_to_bootstrap.com/*">
+
+## Локальные файлы из папки static ##
+1. В начале html прописать {% load static %} --> подгружаем локальную папку static
+2. CSS - в head прописываем <link rel="stylesheet" type="text/css" href="{% static 'main/css/bootstrap_css/bootstrap.min.css' %}">
+2. JS - в body прописываем <script src="{% static 'main/js/bootstrap_js/bootstrap.min.js' %}"></script>

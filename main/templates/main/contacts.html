@@ -1,0 +1,31 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    <title>Контакты</title>
+{%endblock%}
+
+{% block top_label %}
+Контакты
+{%endblock%}
+
+{% block main_info %}
+    <p>Свяжитесь с нами! Не пожалеете! Сделаю лучший онлайн магазин!</p>
+    <p>Тел.: 7 ХХХ ХХ ХХ</p>
+    <p>Почта: ххх@email.ru</p>
+    <p>Или оставьте свои данные, мы с вами свяжемся!</p>
+    <form class='call_me_back'>
+        <div class="mb-3">
+          <label for="email" class="form-label">Почта:</label>
+          <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="mobile_number" class="form-label">Мобильный телефон:</label>
+            <input type="mobile_number" class="form-control" id="mobile_number" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="customer_needs" class="form-label">Ваши пожелания:</label>
+            <textarea class="form-control" id="customer_needs" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-warning">Отправить</button>
+      </form>
+{%endblock%}
