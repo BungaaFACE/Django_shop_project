@@ -21,7 +21,8 @@ main .top_label {
 
 main .page_name {
     position: relative;
-    left: 37%;
+    left: auto;
+    right: auto;
 }
 
 main .main_info {
