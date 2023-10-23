@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from pprint import pprint
 
 
 def test_http_response(request):
@@ -20,4 +21,12 @@ def index(request):
 
 
 def contacts(request):
+    if request.method == 'POST':
+        data = {}
+        # в переменной request хранится информация о методе, который отправлял пользователь
+        data['email'] = request.POST.get('email')
+        data['mobile_number'] = request.POST.get('mobile_number')
+        data['customer_needs'] = request.POST.get('customer_needs')
+        # а также передается информация, которую заполнил пользователь
+        pprint(data)
     return render(request, 'main/contacts.html')

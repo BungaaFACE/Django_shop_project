@@ -13,18 +13,19 @@
     <p>Тел.: 7 ХХХ ХХ ХХ</p>
     <p>Почта: ххх@email.ru</p>
     <p>Или оставьте свои данные, мы с вами свяжемся!</p>
-    <form class='call_me_back'>
+    <form class='call_me_back' method="post">
+        {% csrf_token %}
         <div class="mb-3">
           <label for="email" class="form-label">Почта:</label>
-          <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+          <input type="email" class="form-control" name="email" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
             <label for="mobile_number" class="form-label">Мобильный телефон:</label>
-            <input type="mobile_number" class="form-control" id="mobile_number" aria-describedby="emailHelp">
+            <input type="mobile_number" class="form-control" name="mobile_number" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
             <label for="customer_needs" class="form-label">Ваши пожелания:</label>
-            <textarea class="form-control" id="customer_needs" rows="3"></textarea>
+            <textarea class="form-control" name="customer_needs" rows="3"></textarea>
         </div>
         <button type="submit" class="btn btn-warning">Отправить</button>
       </form>
