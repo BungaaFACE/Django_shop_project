@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from pprint import pprint
 from main.models import Product, Contacts
@@ -42,11 +42,9 @@ def contacts(request):
 
 
 def catalog(request):
-    catalog = Product.objects.all()[:5]
-    for product in catalog:
-        if len(product.product_desc) > 100:
-            product.product_desc = product.product_desc[:100] + '...'
-    return render(request, 'main/catalog.html', {'catalog': catalog})
+    redirect_page = f"{reverse('catalog')}page-1"
+    return redirect(to=redirect_page)
+    redirect
 
 
 def product_page(request, product_id):
@@ -92,16 +90,13 @@ def catalog_page(request, page_num):
             product.product_desc = product.product_desc[:100] + '...'
 
     for page_button in range(1, total_pages+1):
-        print(page_button)
         if page_button == page_num:
             button_color = 'ffd900'
         else:
             button_color = 'd1b200'
         pages_buttons += f"<a class='btn' "\
             f"style='background-color: #{button_color}; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' "\
-            f"href='{catalog_url}/page-"\
-            f"{page_button}' "\
+            f"href='{catalog_url}page-{page_button}' "\
             f"role='button'>{page_button}</a>\n"
-    print(pages_buttons)
 
     return render(request, 'main/catalog.html', {'catalog': catalog, 'buttons': pages_buttons})
