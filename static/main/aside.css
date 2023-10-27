@@ -6,8 +6,7 @@ aside {
     height: 100vh;
     padding: 1%;
     color: black;
-    /* margin: 0.7%; */
-
+    position: fixed;
 }
 
 aside img {

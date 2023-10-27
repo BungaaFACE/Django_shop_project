@@ -1,7 +1,10 @@
 {% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
 
 {% block title %}
     <title>Главная страница</title>
+    <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
 {%endblock%}
 
 {% block top_label %}
@@ -9,5 +12,25 @@
 {%endblock%}
 
 {% block main_info %}
-        <p>Добро пожаловать на главную страницу!</p>
+    {% if catalog %}
+        {% for product in catalog %}
+            <div class='product'>
+                <div style='height: 180px;'>
+                    <a href="{% url 'catalog' %}/product-{{ product.id }}" style='color: white'>
+                        <div class='product_img'>
+                            <img src="{% mediapath product.product_img %}" alt="product_img">
+                        </div>
+                        <div class='product_name'>
+                            <h4>{{ product.product_name }}</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class='product_desc'>
+                    <h6>{{ product.product_desc }}</h6>
+                    <a class="btn btn-warning" href="{% url 'catalog' %}/product-{{ product.id }}" role="button">Подробнее</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 {%endblock%}

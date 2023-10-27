@@ -1,0 +1,24 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Добавление продукта</title>
+{%endblock%}
+
+{% block top_label %}
+Добавление продукта
+{%endblock%}
+
+{% block main_info %}
+        <form method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.product_name }}<br>
+            {{ form.product_desc }}<br>
+            {{ form.product_img }}<br>
+            {{ form.category_name }}<br>
+            {{ form.unit_price }}<br>
+            {{ result | safe }}<br>
+            <button type="submit" class="btn btn-warning">Добавить продукт</button>
+        </form>
+{%endblock%}
