@@ -7,6 +7,18 @@
 - LANGUAGE_CODE = 'ru-ru' --> язык django
 - TIME_ZONE = 'Europe/Moscow' --> часовой пояс
 - STATICFILES_DIRS = (BASE_DIR / 'static',) --> дописать путь к файлам статики (js, css, etc)
+- Заполнить данные БД (+установить psycopg2 при необходимости)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_name', # Название БД
+        'USER': 'postgres', # Пользователь для подключения
+        'PASSWORD': 'secret', # Пароль для этого пользователя
+        'HOST': '127.0.0.1', # Адрес, на котором развернут сервер БД
+        'PORT': 5432, # Порт, на котором работает сервер БД}}
+- Заполнить данные по media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 3. python manage.py startapp main --> создание приложения (отдельной группы для страниц сайта)
 4. Добавить новое приложение в настройки settings.py INSTALLED_APPS = ['main', ...]
@@ -14,12 +26,14 @@
 5. Создать файл urls.py в папке приложения --> сделать локальный файл с маршрутизацией для приложения
 6. В основном urls.py добавить ссылку на новый файл urls приложения path('', include(('main.urls', 'main'), namespace='main')) --> при обращении 
 на главную страницу сайта будет обращение к файлу main.urls
-6.1 Добавляем поддержку статика в urls.py 
+6.1 Добавляем поддержку статика и медиа в urls.py 
 
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns = [...] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + \
+        static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 7. В локальный urls добавить отслеживание главной страницы from . import views && urlpatterns = [path('', views.index)] --> при обращении 
 на главную страницу сайта будет использоваться функция index(request) из файла views
@@ -89,3 +103,41 @@ urlpatterns = [...] + static(settings.STATIC_URL, document_root=settings.STATIC_
 1. В начале html прописать {% load static %} --> подгружаем локальную папку static
 2. CSS - в head прописываем <link rel="stylesheet" type="text/css" href="{% static 'main/css/bootstrap_css/bootstrap.min.css' %}">
 2. JS - в body прописываем <script src="{% static 'main/js/bootstrap_js/bootstrap.min.js' %}"></script>
+
+
+### Работа с БД ###
+0. Прописание настройки БД указано выше. settings.py + urls.py для дебага
+1. В файле models.py можно настроить таблицу с определенными параметрами.
+class Student(models.Model):
+    first_name = models.CharField(max_length=150, verbose_name='имя')
+    last_name = models.CharField(max_length=150, verbose_name='фамилия')
+
+    def __str__(self): 
+        # Строковое отображение объекта
+        return f'{self.first_name} {self.last_name}'
+
+    class Meta:
+        verbose_name = 'студент' # Настройка для наименования одного объекта
+        verbose_name_plural = 'студенты' # Настройка для наименования набора объектов
+
+2. Зарегистрировать таблицу для интерфейса админа - в admin.py добавить admin.site.register(Product)
+
+3. В файле admin.py добавить 
+@admin.register(Product) # добавление отображения таблицы
+class ProductAdmin(admin.ModelAdmin): # класс для вывода
+    list_display = ('id', 'product_name', 'unit_price', 'category_name') # какие столбы показывать в админке
+    list_filter = ('category_name',) # фильтрация по столбцу
+    search_fields = ('product_name', 'product_desc') # поиск по столбцу
+
+
+### Фикстуры для ДБ ###
+1. вывод данных из ДБ --> python manage.py dumpdata > saved_data.json
+2. вывод данных из ДБ --> python manage.py loaddata saved_data.json
+
+### Кастомные команды ###
+1. Создать пакет management и в нем пакет commands
+2. Создать класс по примеру ниже и прописать требуемые действия в handle()
+from django.core.management import BaseCommand
+
+class Command(BaseCommand):
+    def handle(self, *args, **options) -> str | None:

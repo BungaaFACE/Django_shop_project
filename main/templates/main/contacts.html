@@ -9,10 +9,10 @@
 {%endblock%}
 
 {% block main_info %}
-    <p>Свяжитесь с нами! Не пожалеете! Сделаю лучший онлайн магазин!</p>
-    <p>Тел.: 7 ХХХ ХХ ХХ</p>
-    <p>Почта: ххх@email.ru</p>
-    <p>Или оставьте свои данные, мы с вами свяжемся!</p>
+    <p>{{ feedback_data.anons }}</p>
+    <p>Тел.: {{ feedback_data.phone }}</p>
+    <p>Почта: {{ feedback_data.email }}</p>
+    <p>{{ feedback_data.feedback_anons }}</p>
     <form class='call_me_back' method="post">
         {% csrf_token %}
         <div class="mb-3">
