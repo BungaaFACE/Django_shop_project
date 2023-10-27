@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
+from main.models import Product, Contacts
 
 
 def test_http_response(request):
@@ -29,4 +30,11 @@ def contacts(request):
         data['customer_needs'] = request.POST.get('customer_needs')
         # а также передается информация, которую заполнил пользователь
         pprint(data)
-    return render(request, 'main/contacts.html')
+    feedback_data = Contacts.objects.get(id=1)
+
+    return render(request, 'main/contacts.html', {'feedback_data': feedback_data})
+
+
+def catalog(request):
+    catalog = Product.objects.all()[:5]
+    return render(request, 'main/catalog.html', {'catalog': catalog})
