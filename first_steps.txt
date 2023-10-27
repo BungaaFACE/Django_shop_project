@@ -19,6 +19,7 @@ DATABASES = {
 - Заполнить данные по media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+TEMPLATE_LOADERS = ('django.template.loaders.app_directories.load_template_source',) # для подгрузки кастомных темплейтов
 
 3. python manage.py startapp main --> создание приложения (отдельной группы для страниц сайта)
 4. Добавить новое приложение в настройки settings.py INSTALLED_APPS = ['main', ...]
@@ -141,3 +142,51 @@ from django.core.management import BaseCommand
 
 class Command(BaseCommand):
     def handle(self, *args, **options) -> str | None:
+
+
+### Создание своих тэгов и фильтров jinja ###
+1. В папке приложения создать пакет templatetags и внутри файл py со своим названием
+2. Заполнить свой фильтр/тег
+import datetime
+from django import template
+
+register = template.Library() # декоратор для создания
+
+# Создание тега
+@register.simple_tag # simple_tag - создание тега с названием функции
+def current_time(format_string):
+    return datetime.datetime.now().strftime(format_string)
+
+# Создание фильтра
+@register.filter(needs_autoescape=True) # создание фильтра
+def initial_letter_filter(text, autoescape=True):
+    first, other = text[0], text[1:]
+    if autoescape:
+        esc = conditional_escape
+    else:
+        esc = lambda x: x
+    result = "<strong>%s</strong>%s" % (esc(first), esc(other))
+    return mark_safe(result)
+
+
+### Создание формы для заполнения с проверкой данных ###
+1. Создать файл forms.py в папке веб-приложения
+2. В forms создаем класс форм и настраиваем его
+from main.models import Product
+from django.forms import ModelForm
+
+class ProductForm(ModelForm):
+
+    class Meta:
+        model = Product # таблица, с которой будем работать
+        fields = ("product_name", "product_desc",
+                  "product_img", "category_name", "unit_price") # Поля, которые будем выводить
+
+3. В views render передаем form = ProductForm()
+4. Добавляем в html
+{{ form.product_name }}<br>
+{{ form.product_desc }}<br>
+{{ form.product_img }}<br>
+{{ form.category_name }}<br>
+{{ form.unit_price }}<br>
+5. Кастомизируем css под свои предпочтения

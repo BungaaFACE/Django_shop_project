@@ -1,0 +1,25 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}
+    <title>{{ product.product_name }}</title>
+    <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
+{%endblock%}
+
+{% block top_label %}
+{{ product.product_name }}
+{%endblock%}
+
+{% block main_info %}
+        <div style='height: 300px; weight: 300px'>
+            <img src="{% get_media_prefix %}{{ product.product_img }}" alt="product_img" style='float: left; object-fit: contain; max-width: 100%; max-height: 100%;'>
+        </div>
+        
+
+        <div class='product_desc'>
+            <h5>Цена: {{ product.unit_price }} руб.</h5>
+            <h5>Дата создания: {{ product.date_created }}</h5>
+            <h5>Дата последнего изменения: {{ product.date_last_modified }}</h5><br>
+            <h6>{{ product.product_desc }}</h6>
+        </div>
+{%endblock%}
