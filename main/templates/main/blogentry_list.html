@@ -1,0 +1,64 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Блог</title>
+    <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
+{%endblock%}
+
+{% block top_label %}
+Блог <a class="btn" href="{% url 'add_entry' %}" role="button" style='border-radius: 13px; border: 2px solid #d1b200; color: white'>Добавить запись</a>
+{%endblock%}
+
+{% block main_info %}
+
+        {% if blog_entries %}
+            {% for entry in page_obj %}
+                <div class='entry' style='weight: 80%; border-radius: 13px; border: 2px solid #d1b200; padding: 10px'>
+                    <div style='height: 20%;'>
+                        <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
+                            {% if entry.entry_img %}
+                            <div style='hieght: 40px;'>
+                                <img src="{% mediapath entry.entry_img %}" alt="product_img">
+                            </div>
+                            {% endif %}
+                            <div class='product_name'>
+                                <h4>{{ product.product_name }}</h4>
+                            </div>
+                        </a>
+                    </div>
+
+
+
+
+
+                    <div style='height: 60px; '>
+                        <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
+                            <div class='entry_name'>
+                                <h4>{{ entry.entry_title }}</h4>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class='entry_desc'>
+                        <h5>{{ entry.entry_body|truncatechars:300 }}</h5>
+                        <p style='font-size: 15px'>Дата публикации: {{ entry.date_created }}</p>
+                        <p style='font-size: 15px'>Просмотров: {{ entry.views_count }}</p>
+                        <a class="btn btn-light" href="{% url 'list_entry' %}{{ entry.id }}" role="button">Подробнее</a>
+                        <a class="btn btn-warning" href="{% url 'list_entry' %}{{ entry.id }}/update" role="button">Изменить</a>
+                        <a class="btn btn-danger" href="{% url 'list_entry' %}{{ entry.id }}/delete" role="button">Удалить</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div >
+                {% for page_button in paginator.page_range %}
+                    {% if page_obj.number == page_button %}
+                        <a class='btn' style='background-color: #ffd900; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>
+                    {% elif page_button >= page_obj.number|add:-2 and page_button <= page_obj.number|add:2  %}
+                        <a class='btn' style='background-color: #d1b200; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+{%endblock%}

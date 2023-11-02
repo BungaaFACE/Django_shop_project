@@ -1,0 +1,47 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Каталог</title>
+    <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
+{%endblock%}
+
+{% block top_label %}
+Каталог
+{%endblock%}
+
+{% block main_info %}
+        {% if catalog %}
+            {% for product in page_obj %}
+                <div class='product'>
+                    <div style='height: 180px;'>
+                        <a href="{% url 'catalog' %}product/{{ product.id }}" style='color: white'>
+                            {% if product.product_img %}
+                            <div class='product_img'>
+                                <img src="{% mediapath product.product_img %}" alt="product_img">
+                            </div>
+                            {% endif %}
+                            <div class='product_name'>
+                                <h4>{{ product.product_name }}</h4>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class='product_desc'>
+                        <h6>{{ product.product_desc|truncatechars:100 }}</h6>
+                        <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}" role="button">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div style='margin-top: 300px;'>
+                {% for page_button in paginator.page_range %}
+                    {% if page_obj.number == page_button %}
+                        <a class='btn' style='background-color: #ffd900; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>
+                    {% elif page_button >= page_obj.number|add:-2 and page_button <= page_obj.number|add:2  %}
+                        <a class='btn' style='background-color: #d1b200; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+{%endblock%}

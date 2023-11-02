@@ -16,10 +16,12 @@
         {% for product in catalog %}
             <div class='product'>
                 <div style='height: 180px;'>
-                    <a href="{% url 'catalog' %}/product-{{ product.id }}" style='color: white'>
+                    <a href="{% url 'catalog' %}product/{{ product.id }}" style='color: white'>
+                        {% if product.product_img %}
                         <div class='product_img'>
                             <img src="{% mediapath product.product_img %}" alt="product_img">
                         </div>
+                        {% endif %}
                         <div class='product_name'>
                             <h4>{{ product.product_name }}</h4>
                         </div>
@@ -27,8 +29,8 @@
                 </div>
 
                 <div class='product_desc'>
-                    <h6>{{ product.product_desc }}</h6>
-                    <a class="btn btn-warning" href="{% url 'catalog' %}/product-{{ product.id }}" role="button">Подробнее</a>
+                    <h6>{{ product.product_desc|truncatechars:100 }}</h6>
+                    <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}" role="button">Подробнее</a>
                 </div>
             </div>
         {% endfor %}

@@ -1,0 +1,22 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Изменение записи</title>
+{%endblock%}
+
+{% block top_label %}
+Изменение записи
+{%endblock%}
+
+{% block main_info %}
+        <form method='post'>
+            {% csrf_token %}
+            {{ form.entry_title }}<br>
+            {{ form.entry_body }}<br>
+            {{ form.entry_img }}<br>
+            Опубликовать запись: {{ form.is_published }}<br>
+            {{ result | safe }}<br>
+            <button type="submit" class="btn btn-warning">Изменить запись</button>
+        </form>
+{%endblock%}

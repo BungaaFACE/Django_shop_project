@@ -1,0 +1,22 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Добавление записи в блог</title>
+{%endblock%}
+
+{% block top_label %}
+Добавление записи в блог
+{%endblock%}
+
+{% block main_info %}
+        <form method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.entry_title }}<br>
+            {{ form.entry_body }}<br>
+            {{ form.entry_img }}<br>
+            Опубликовать запись: {{ form.is_published }}<br>
+            {{ result | safe }}<br>
+            <button type="submit" class="btn btn-warning">Добавить запись</button>
+        </form>
+{%endblock%}
