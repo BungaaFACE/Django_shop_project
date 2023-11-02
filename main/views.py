@@ -118,7 +118,7 @@ class EntryCreateView(CreateView):
     template_name = 'main/add_blog_entry.html'
 
     def post(self, request, *args, **kwargs):
-        form = EntryForm(request.POST)
+        form = EntryForm(request.POST, request.FILES)
         print(form.__dict__)
         if form.is_valid():
             saved_form = form.save()

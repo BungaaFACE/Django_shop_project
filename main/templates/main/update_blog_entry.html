@@ -10,7 +10,7 @@
 {%endblock%}
 
 {% block main_info %}
-        <form method='post'>
+        <form method='post' enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.entry_title }}<br>
             {{ form.entry_body }}<br>

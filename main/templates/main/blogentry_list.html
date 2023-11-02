@@ -18,12 +18,8 @@
                 <div class='entry' style='weight: 80%; border-radius: 13px; border: 2px solid #d1b200; padding: 10px'>
                     <div style='height: 20%;'>
                         <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
-                            {% if entry.entry_img %}
-                            <div style='hieght: 40px;'>
-                                <img src="{% mediapath entry.entry_img %}" alt="product_img">
-                            </div>
-                            {% endif %}
-                            <div class='product_name'>
+
+                            <div>
                                 <h4>{{ product.product_name }}</h4>
                             </div>
                         </a>
@@ -32,14 +28,27 @@
 
 
 
+                    {% if entry.entry_img %}
+                    <div style='height: 380px; '>
+                        <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
+                            <div class='entry_name'>
+                                <h4>{{ entry.entry_title }}</h4>
+                            </div>
+                            <div style='height: 180px;'>
+                                <img src="{% mediapath entry.entry_img %}" alt="product_img" style='max-height: 340px;'>
+                            </div>
 
-                    <div style='height: 60px; '>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div style='height: 40px; '>
                         <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
                             <div class='entry_name'>
                                 <h4>{{ entry.entry_title }}</h4>
                             </div>
                         </a>
                     </div>
+                    {% endif %}
 
                     <div class='entry_desc'>
                         <h5>{{ entry.entry_body|truncatechars:300 }}</h5>
