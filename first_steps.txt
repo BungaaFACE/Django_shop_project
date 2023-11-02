@@ -133,7 +133,7 @@ class ProductAdmin(admin.ModelAdmin): # класс для вывода
 
 ### Фикстуры для ДБ ###
 1. вывод данных из ДБ --> python manage.py dumpdata > saved_data.json
-2. вывод данных из ДБ --> python manage.py loaddata saved_data.json
+2. ввод данных в ДБ --> python manage.py loaddata saved_data.json
 
 ### Кастомные команды ###
 1. Создать пакет management и в нем пакет commands
@@ -190,3 +190,50 @@ class ProductForm(ModelForm):
 {{ form.category_name }}<br>
 {{ form.unit_price }}<br>
 5. Кастомизируем css под свои предпочтения
+
+
+### CBV (Class Based Views) ###
+Вместо функций в views можно использовать классы на основе уже готовых классов (generic-ов)
+CreateView — отвечает за создание объекта, для него название шаблона должно строиться следующим образом: 
+<app_name>/<model>_form.html
+DetailView — отвечает за просмотр деталей объекта, название шаблона для него строится следующим образом: 
+<app_name>/<model>_detail.html
+UpdateView — отвечает за редактирование объекта, для него название шаблона строится так: 
+<app_name>/<model>_form.html
+DeleteView — отвечает за удаление объекта, для него название шаблона строится следующим образом: 
+<app_name>/<model>_confirm_delete.html
+ListView — отвечает за отображение списка объектов, для него название шаблона строится так: 
+<app_name>/<model>_list.html
+TemplateView — не отвечает за работу с объектам, но является очень полезным классом для вывода статических страниц с информацией, при этом шаблон нужно указывать вручную.
+
+Для всех generic-ов можно установить кастомное название для html.
+
+Примеры
+CreateView: - добавление объектов в модель через страницу
+class StudentCreateView(CreateView):
+    model = Student # Модель
+    fields = ('first_name', 'last_name', 'email',) # Поля для заполнения при создании
+    success_url = reverse_lazy('students:list') # Адрес для перенаправления после успешного создания
+
+DetailView: - детальный обзор записи из модели
+class StudentDetailView(DetailView):
+    model = Student # Модель
+
+ListView: - вывод списка объектов из модели
+class StudentListView(ListView):
+    model = Student # Модель
+
+UpdateView: - изменение объекта в модели
+class StudentUpdateView(UpdateView):
+    model = Student # Модель
+    fields = ('first_name', 'last_name', 'email',) # Поля для редактирования
+    success_url = reverse_lazy('students:list') # Адрес для перенаправления после успешного редактирования
+
+DeleteView: - удаление объектов из модели
+class StudentDeleteView(DeleteView):
+    model = Student # Модель
+    success_url = reverse_lazy('students:list') # Адрес для перенаправления после успешного удаления
+
+TemplateView: - просто вывод кастомной страницы без взаимодействия с моделью?
+class DashboardView(TemplateView):
+    template_name = 'dashboard.html' # Шаблоны

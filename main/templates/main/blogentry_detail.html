@@ -1,0 +1,34 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Просмотр записи</title>
+{%endblock%}
+
+{% block top_label %}
+Просмотр записи
+{%endblock%}
+
+{% block main_info %}
+<div class='entry' style='weight: 80%; padding: 10px'>
+    <div style='height: 60px; '>
+        <div class='entry_name'>
+            <h4>{{ entry.entry_title }}</h4>
+            {% if entry.entry_img %}
+            <div style='height: 300px; weight: 300px'>
+                <img src="{% mediapath entry.entry_img %}" alt="product_img" style='float: left; object-fit: contain; max-width: 100%; max-height: 100%;'>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class='entry_desc'>
+        <h5>{{ entry.entry_body|truncatechars:300 }}</h5>
+        <p style='font-size: 15px'>Дата публикации: {{ entry.date_created }}</p>
+        <p style='font-size: 15px'>Просмотров: {{ entry.views_count }}</p>
+        <a class="btn btn-warning" href="{% url 'list_entry' %}{{ entry.id }}/update" role="button">Изменить</a>
+        <a class="btn btn-danger" href="{% url 'list_entry' %}{{ entry.id }}/delete" role="button">Удалить</a>
+    </div>
+</div>
+{%endblock%}

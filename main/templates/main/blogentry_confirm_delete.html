@@ -1,0 +1,22 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Удаление записи</title>
+{%endblock%}
+
+{% block top_label %}
+Удаление записи
+{%endblock%}
+
+{% block main_info %}
+<div class='entry' style='weight: 80%; padding: 10px'>
+    <form method='post'>
+        {% csrf_token %}
+        <p style='font-size: 25px'>Вы уверены, что хотите удалить запись "{{ entry.entry_title }}"?</p>
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a class="btn btn-light" href="{% url 'list_entry' %}{{ entry.id }}" role="button">Отмена</a>
+    </form>
+</div>
+{%endblock%}
