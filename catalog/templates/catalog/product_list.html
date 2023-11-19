@@ -13,6 +13,7 @@
 
 {% block main_info %}
         {% if catalog %}
+            <div class='row'>
             {% for product in page_obj %}
                 <div class='product'>
                     <div style='height: 180px;'>
@@ -31,10 +32,12 @@
                     <div class='product_desc'>
                         <h6>{{ product.product_desc|truncatechars:100 }}</h6>
                         <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}" role="button">Подробнее</a>
+                        <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}/update" role="button">Изменить</a>
                     </div>
                 </div>
             {% endfor %}
-            <div style='margin-top: 300px;'>
+            </div>
+            <div style='margin-top: 10px;'>
                 {% for page_button in paginator.page_range %}
                     {% if page_obj.number == page_button %}
                         <a class='btn' style='background-color: #ffd900; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>

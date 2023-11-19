@@ -19,9 +19,18 @@
     {% endif %}
 
     <div class='product_desc'>
-        <h5>Цена: {{ product.unit_price }} руб.</h5>
-        <h5>Дата создания: {{ product.date_created }}</h5>
-        <h5>Дата последнего изменения: {{ product.date_last_modified }}</h5><br>
-        <h6>{{ product.product_desc }}</h6>
+        <div class='card' style='background-color: #1d1d1d; padding: 13px; margin: 7px; color: white; border: 2px solid #ffd900'>
+            <h5>Описание: {{ product.product_desc }}</h5>
+            <hr>
+            <h6>Версия продукта: {{ version.product_version }}</h6>
+            <h6>Название версии: {{ version.version_name }}</h6>
+            <hr>
+            <h5>Цена: {{ product.unit_price }} руб.</h5>
+            <h5>Дата создания: {{ product.date_created }}</h5>
+            <h5>Дата последнего изменения: {{ product.date_last_modified }}</h5><br>
+            <div class='col-6'>
+                <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}/update" role="button">Изменить</a>
+            </div>
+        </div>
     </div>
 {%endblock%}
