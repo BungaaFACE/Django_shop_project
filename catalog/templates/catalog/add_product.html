@@ -3,22 +3,35 @@
 {% load custom_tags %}
 
 {% block title %}
-    <title>Добавление продукта</title>
+    <title>{{ type }} продукт</title>
 {%endblock%}
 
 {% block top_label %}
-Добавление продукта
+{{ type }} продукт
 {%endblock%}
 
 {% block main_info %}
         <form method='post' enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.product_name }}<br>
-            {{ form.product_desc }}<br>
-            {{ form.product_img }}<br>
-            {{ form.category_name }}<br>
-            {{ form.unit_price }}<br>
-            {{ result | safe }}<br>
-            <button type="submit" class="btn btn-warning">Добавить продукт</button>
+            <div class='row'>
+                <div class='col'>
+                    <div class='card' style='background-color: #1d1d1d; padding: 13px; margin: 7px; color: white; border: 2px solid #ffd900'>
+                        {{ form.as_p }}
+                        {{ result|safe }}
+                        <button type="submit" class="btn btn-warning">{{ type }} продукт</button>
+                    </div>
+                </div>
+                {% if formset.forms %}
+                <div class='col'>
+                    {{ formset.management_form }}
+                    {% for form in formset.forms %}
+                        <div class='card' style='background-color: #1d1d1d; padding: 13px; margin: 7px; color: white; border: 2px solid #ffd900'>
+                            {{ form.as_p }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+            </div>
         </form>
 {%endblock%}

@@ -13,7 +13,6 @@ class EntryCreateView(CreateView):
 
     def post(self, request, *args, **kwargs):
         form = EntryForm(request.POST, request.FILES)
-        print(form.__dict__)
         if form.is_valid():
             saved_form = form.save()
             saved_form.entry_slug = slugify(

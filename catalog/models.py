@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -10,17 +11,16 @@ class Category(models.Model):
         max_length=500, verbose_name='описание', **NULLABLE)
 
     def __str__(self):
-        # Строковое отображение объекта
         return f'{self.category_name}'
 
     class Meta:
-        verbose_name = 'категория'  # Настройка для наименования одного объекта
-        verbose_name_plural = 'категории'  # Настройка для наименования набора объектов
+        verbose_name = 'категория'
+        verbose_name_plural = 'категории'
 
 
 class Product(models.Model):
     product_name = models.CharField(
-        max_length=150, verbose_name='наименование')
+        max_length=150, verbose_name='наименование', unique=True)
     product_desc = models.TextField(verbose_name='Описание', **NULLABLE)
     product_img = models.ImageField(
         upload_to='products_img/', verbose_name='изображение', **NULLABLE)
@@ -34,8 +34,26 @@ class Product(models.Model):
 
     def __str__(self):
         # Строковое отображение объекта
-        return f'{self.product_name} {self.category_name} {self.unit_price}'
+        return f'{self.product_name}'
 
     class Meta:
         verbose_name = 'продукт'  # Настройка для наименования одного объекта
         verbose_name_plural = 'продукты'  # Настройка для наименования набора объектов
+
+
+class ProductVersion(models.Model):
+    product = models.ForeignKey(
+        Product, to_field='product_name', verbose_name="продукт", on_delete=models.CASCADE)
+    product_version = models.CharField(
+        verbose_name="номер версии", max_length=50)
+    version_name = models.CharField(
+        verbose_name="название версии", max_length=50)
+    is_current_version = models.BooleanField(
+        verbose_name="признак текущей версии")
+
+    def __str__(self):
+        return f'{self.product} {self.version_name} {self.product_version} {self.is_current_version}'
+
+    class Meta:
+        verbose_name = 'версия продукта'
+        verbose_name_plural = 'версии продуктов'
