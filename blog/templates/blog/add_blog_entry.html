@@ -10,6 +10,7 @@
 {%endblock%}
 
 {% block main_info %}
+    {% if user.is_authenticated %}
         <form method='post' enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.entry_title }}<br>
@@ -19,4 +20,7 @@
             {{ result | safe }}<br>
             <button type="submit" class="btn btn-warning">Добавить запись</button>
         </form>
+    {% else %}
+    <<p>У вас недостаточно прав.</p>
+    {% endif %}
 {%endblock%}

@@ -11,6 +11,7 @@
 {%endblock%}
 
 {% block main_info %}
+{% if user.is_authenticated %}
 <div class='entry' style='weight: 80%; padding: 10px'>
     <form method='post'>
         {% csrf_token %}
@@ -19,4 +20,7 @@
         <a class="btn btn-light" href="{% url 'list_entry' %}{{ entry.id }}" role="button">Отмена</a>
     </form>
 </div>
+{% else %}
+<<p>У вас недостаточно прав.</p>
+{% endif %}
 {%endblock%}

@@ -28,8 +28,9 @@
             <a href="{% url 'test_http_response' %}"><li><i class="fa-solid fa-flask-vial"></i> Test HttpResponse</li></a>
             <a href="{% url 'test_include' %}"><li><i class="fa-solid fa-flask-vial"></i> Test { %include% }</li></a>
         </ul>
+        {% if user.is_authenticated %}
         <a class="btn btn-warning" href="{% url 'add_product' %}" role="button">Добавить продукт</a>
-
+        {% endif %}
         <div style='position: absolute; bottom: 0; left: 0; height: 60px; width:100%; background-color: #e7d003; border-right: 2px solid black; padding: 2px'>
             {% if user.is_authenticated %}
             <a href="{% url 'profile' %}">

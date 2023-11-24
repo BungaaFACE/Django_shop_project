@@ -17,6 +17,7 @@ class EntryCreateView(CreateView):
             saved_form = form.save()
             saved_form.entry_slug = slugify(
                 saved_form.entry_title)
+            saved_form.user = request.user
             saved_form.save()
             result = "<h5 style='background-color: #00b91f; color: black; border-radius: 7px; height: 30px; text-align: center;'>Запись добавлена!</h5>"
             form = EntryForm()
