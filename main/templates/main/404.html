@@ -1,0 +1,16 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Страница не найдена 404</title>
+    <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
+{%endblock%}
+
+{% block top_label %}
+Страница не найдена 404
+{%endblock%}
+
+{% block main_info %}
+<p>Страница не найдена 404</p>
+{%endblock%}
