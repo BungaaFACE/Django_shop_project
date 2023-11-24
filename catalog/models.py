@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -31,6 +33,8 @@ class Product(models.Model):
         verbose_name="дата создания", auto_now_add=True)
     date_last_modified = models.DateField(
         verbose_name="дата изменения", auto_now=True)
+    user = models.ForeignKey(User, verbose_name=_(
+        "пользователь"), on_delete=models.CASCADE, default=None, **NULLABLE)
 
     def __str__(self):
         # Строковое отображение объекта

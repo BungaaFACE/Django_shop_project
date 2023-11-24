@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from users.models import User
 
 
 NULLABLE = {'blank': True, 'null': True}
@@ -18,6 +20,8 @@ class BlogEntry(models.Model):
         verbose_name="признак публикации", default=False)
     views_count = models.IntegerField(
         verbose_name="количество просмотров", default=0)
+    user = models.ForeignKey(User, verbose_name=_(
+        "пользователь"), on_delete=models.CASCADE, default=None, **NULLABLE)
 
     def __str__(self):
         # Строковое отображение объекта

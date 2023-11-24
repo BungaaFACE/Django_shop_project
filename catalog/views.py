@@ -13,8 +13,11 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['version'] = ProductVersion.objects.get(
-            product=context['object'], is_current_version=True)
+        try:
+            context['version'] = ProductVersion.objects.get(
+                product=context['object'], is_current_version=True)
+        except:
+            pass
         return context
 
 
@@ -30,6 +33,7 @@ class ProductCreateView(CreateView):
             result = "<h5 style='background-color: #00b91f; color: black; border-radius: 7px; height: 30px; text-align: center;'>Продукт добавлен!</h5>"
             # Сохранение формы
             product = form.save()
+            product.user = self.request.user
             product.save()
             # Создание и сохранение версии
             version = ProductVersion(product=product, product_version="1.0",
