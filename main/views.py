@@ -5,7 +5,8 @@ from main.models import Contacts
 
 
 def test_http_response(request):
-    return HttpResponse("""<h4>Привет мир!</h4><br><h3>Навигация</h3>
+    return HttpResponse("""<h4>Привет мир!</h4><br>
+                        <h3>Навигация</h3>
                         <ul>
                             <a href="/"><li><i class="fa-solid fa-house fa-fade"></i>Главная</li></a>
                             <a href="test_http_response"><li><i class="fa-solid fa-flask-vial fa-fade"></i>Test HttpResponse</li></a>

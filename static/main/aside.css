@@ -9,6 +9,10 @@ aside {
     position: fixed;
 }
 
+.palitre {
+    background-color: #e7d003;
+}
+
 aside img {
     width: 120px;
     float: left;

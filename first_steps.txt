@@ -237,3 +237,143 @@ class StudentDeleteView(DeleteView):
 TemplateView: - просто вывод кастомной страницы без взаимодействия с моделью?
 class DashboardView(TemplateView):
     template_name = 'dashboard.html' # Шаблоны
+
+
+
+### Авторизация ###
+0. Создать веб-приложение users (или другое название)
+1. Для авторизации небоходимо сделать модель пользователя, наследуемый от AbstractUser
+2. В настройках проекта необходимо прописать новую модель для авторизации AUTH_USER_MODEL = 'users.User'
+ и LOGIN_REDIRECT_URL = '/' (для редиректа на главную страницу после входа)
+ и LOGOUT_REDIRECT_URL = '/' (для редиректа на главную страницу после выхода)
+
+Опциональные шаги:
+- Генерация пароля
+class UserProfileView(UpdateView):
+    model = User
+    form_class = UserChangeForm
+
+    def form_valid(self, form):
+        # Метод, который отрабатывает при успешной валидации формы
+        if form.is_valid():
+            self.object = form.save()
+            # Сохранение объекта перед тем, как установить ему пароль
+            if form.data.get('need_generate', False):
+                self.object.set_passeword( # Функция установки пароля, 
+                # которая хеширует строку для того, 
+                # чтобы не хранить пароль в открытом виде в БД
+                    self.object.make_random_password(12) # Функция генерации пароля
+                )
+                self.object.save()
+
+        return super().form_valid(form)
+
+- Изменение полней авторазиции
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class User(AbstractUser):
+    username = None # отключение использования юзернейма
+
+    # Переопределяем поле почты, чтобы сделать поле уникальным
+    email = models.EmailField(verbose_name='почта', unique=True)
+
+    # В качестве юзернейма теперь используем почту
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+При переопределении модели перестанет работать createsuperuser. Можно написать кастомную команду на добавление суперюзера:
+# users/management/commands/csu.py
+from django.core.management import BaseCommand
+from users.models import User
+
+class Command(BaseCommand):
+
+    def handle(self, *args, **options):
+        user = User.objects.create(
+            email='admin@gmail.com',
+            first_name='admin',
+            last_name='admin',
+            is_staff=True,
+            is_superuser=True
+        )
+
+        user.set_password('admin')
+        user.save()
+
+Или добавить метод для добавления суперюзера в модель юзера:
+class UserManager(UserBaseManager):
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError("The given username must be set")
+        email = self.normalize_email(email)
+        GlobalUserModel = apps.get_model(
+            self.model._meta.app_label, self.model._meta.object_name
+        )
+        email = GlobalUserModel.normalize_username(email)
+        user = self.model(email=email, **extra_fields)
+        user.password = make_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self._create_user(email, password, **extra_fields)
+
+class User(AbstractUser):
+    ...
+
+    objects = UserManager()
+
+Пример создания пользователя
+# forms.py
+class RegisterForm(UserCreationForm):
+    # Наследуемся от специальной формы UserCreationForm из модуля auth
+    class Meta:
+        model = User
+        # Указываем новую кастомную модель
+        fields = ('email', 'password1', 'password2',)
+        # Меняем поля, так как исходная форма UserCreationForm 
+        # ссылается на поле username
+
+# views.py
+class RegisterView(CreateView):
+    # Создаем обычный контроллер на создание сущности
+    model = User
+    form_class = RegisterForm
+
+
+
+### Использование почты в Django ###
+1. Добавить в настройки 
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'bungaa-test-projects@yandex.ru'
+EMAIL_HOST_PASSWORD = 'password'
+ENABLE_USE_SSL = True
+
+2. Создать функцию для отправки (в моем случае в services.py)
+from django.core.mail import send_mail
+from django.conf import settings
+
+def send_mail_function():
+    send_mail(
+        'Тема письма',
+        'Текст письма',
+        settings.EMAIL_HOST_USER,  # Почта, с которой отправлять письмо
+        ['mail_to_send'] # Можно список или строку получателей
+    )
