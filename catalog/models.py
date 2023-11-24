@@ -35,6 +35,7 @@ class Product(models.Model):
         verbose_name="дата изменения", auto_now=True)
     user = models.ForeignKey(User, verbose_name=_(
         "пользователь"), on_delete=models.CASCADE, default=None, **NULLABLE)
+    is_published = models.BooleanField(_("опубликовано"), default=False)
 
     def __str__(self):
         # Строковое отображение объекта
@@ -43,6 +44,12 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'продукт'  # Настройка для наименования одного объекта
         verbose_name_plural = 'продукты'  # Настройка для наименования набора объектов
+        permissions = [
+            (
+                'set_published',
+                'Can publish posts'
+            ),
+        ]
 
 
 class ProductVersion(models.Model):

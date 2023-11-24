@@ -15,7 +15,16 @@ class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
     template_name = 'users/register.html'
-    success_url = reverse_lazy('login')
+    # success_url = reverse_lazy('login')
+
+    def get_success_url(self) -> str:
+
+        url = reverse('verify_email_link', args=[
+            self.object.email_verification_token])
+        full_url = self.request.build_absolute_uri(url)
+        send_verification_code(self.object.email, full_url)
+
+        return reverse_lazy('verify_email_sent')
 
 
 class ProfileView(UpdateView):
@@ -28,7 +37,6 @@ class ProfileView(UpdateView):
 
 
 def verify_email_sent(request):
-    send_verification_code(request)
     return render(request, 'users/verify_email_sent.html')
 
 
@@ -52,3 +60,6 @@ class ChangePassword(PasswordChangeView):
     def get_success_url(self) -> str:
         logout(self.request)
         return reverse('login')
+
+
+# class CustomRegisterView(RegisterView)
