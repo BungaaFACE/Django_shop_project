@@ -9,7 +9,7 @@
 
 {% block top_label %}
 Блог 
-{% if user.is_authenticated %}
+{% if perms.blog.add_blogentry or user.is_superuser %}
 <a class="btn" href="{% url 'add_entry' %}" role="button" style='border-radius: 13px; border: 2px solid #d1b200; color: white'>Добавить запись</a>
 {% endif %}
 {%endblock%}
