@@ -3,9 +3,11 @@ from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
-
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from catalog.filters import ProductFilter
 from catalog.models import Product, ProductVersion
-from catalog.forms import ProductForm, ProductVersionForm
+from catalog.forms import ProductFormAdmin, ProductFormModerator, ProductFormUser, ProductVersionForm
+from django_filters.views import FilterView
 
 
 class ProductDetailView(DetailView):
@@ -21,12 +23,17 @@ class ProductDetailView(DetailView):
         return context
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    form_class = ProductForm
     template_name = 'catalog/add_product.html'
-    # extra_content = {'type': 'Добавить'}
     success_url = reverse_lazy('add_product')
+
+    def get_form_class(self):
+        if self.request.user.is_superuser:
+            self.form_class = ProductFormAdmin
+        else:
+            self.form_class = ProductFormUser
+        return super().get_form_class()
 
     def form_valid(self, form):
         if form.is_valid():
@@ -40,7 +47,7 @@ class ProductCreateView(CreateView):
                                      version_name="Создание продукта", is_current_version=True)
             version.save()
             # Очистка формы для вывода удачного результата
-            form = ProductForm()
+            form = self.form_class
             return self.render_to_response(self.get_context_data(form=form, result=result))
         return super().form_valid(form)
 
@@ -58,22 +65,40 @@ class ProductCreateView(CreateView):
         return context
 
 
-class ProductListView(ListView):
+class ProductListView(FilterView):
     model = Product
     paginate_by = 6
     context_object_name = 'catalog'
+    filterset_class = ProductFilter
+    template_name = 'catalog/product_list.html'
 
     def get_queryset(self):
-        data = Product.objects.all().order_by('-date_last_modified')
+        if self.request.user.is_superuser or self.request.user.has_perm('catalog.set_published'):
+            data = Product.objects.all().order_by('-date_last_modified')
+        else:
+            data = Product.objects.filter(
+                is_published=True).order_by('-date_last_modified')
 
         return data
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    form_class = ProductForm
     template_name = 'catalog/add_product.html'
-    extra_content = {'type': 'Изменить'}
+
+    def get_form_class(self):
+        if self.request.user.is_superuser:
+            self.form_class = ProductFormAdmin
+        elif self.request.user == self.object.user:
+            self.form_class = ProductFormUser
+        elif self.request.user.has_perm('catalog.set_published'):
+            self.form_class = ProductFormModerator
+        return super().get_form_class()
+
+    def test_func(self):
+        return self.request.user.is_superuser or \
+            self.request.user == self.get_object().user or \
+            self.request.user.has_perm('catalog.set_published')
 
     def get_success_url(self, *args, **kwargs):
         return reverse('product', args=[self.get_object().pk])
@@ -90,7 +115,7 @@ class ProductUpdateView(UpdateView):
         else:
             context_data['formset'] = SubjectFormset(instance=self.object)
 
-        context_data['type'] = 'Добавить'
+        context_data['type'] = 'Изменить'
         return context_data
 
     def form_invalid(self, form):

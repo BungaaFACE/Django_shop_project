@@ -6,13 +6,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         user = User.objects.create(
-            email='admin@gmail.com',
-            first_name='admin',
-            last_name='admin',
+            email='content@gmail.com',
+            first_name='content',
+            last_name='content',
             is_active=True,
-            is_staff=True,
-            is_superuser=True,
+            is_staff=False,
+            is_superuser=False,
         )
 
-        user.set_password('admin')
+        user.set_password('content')
+        user.groups.add(2)
         user.save()

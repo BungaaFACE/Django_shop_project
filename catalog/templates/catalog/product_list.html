@@ -13,6 +13,20 @@
 
 {% block main_info %}
         {% if catalog %}
+            {% if perms.catalog.set_published or user.is_superuser %}
+            <div style='margin-bottom: 10px;font-size: 20px; margin-top: 0px;'>
+                <form method="get" class='row'>
+                    {% for field in filter.form %}
+                    <div class="form-check form-check-reverse col"  style='margin-top: 15px'>
+                        {{ field.label }}: {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary col-auto" style='margin: 10px'>Фильтр</button>
+                    
+                </form>
+                
+            </div>
+            {% endif %}
             <div class='row'>
             {% for product in page_obj %}
                 <div class='product'>
@@ -32,7 +46,7 @@
                     <div class='product_desc'>
                         <h6>{{ product.product_desc|truncatechars:100 }}</h6>
                         <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}" role="button">Подробнее</a>
-                        {% if user.is_authenticated %}
+                        {% if perms.catalog.set_published or user.is_superuser or product.user == user %}
                         <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}/update" role="button">Изменить</a>
                         {% endif %}
                     </div>
@@ -42,9 +56,11 @@
             <div style='margin-top: 10px;'>
                 {% for page_button in paginator.page_range %}
                     {% if page_obj.number == page_button %}
-                        <a class='btn' style='background-color: #ffd900; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>
+                        <a class='btn' style='background-color: #d1b200; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?{% custom_page_href page_button %}" role='button'>{{ page_button }}</a>
+                        <!-- <a class='btn' style='background-color: #ffd900; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a> -->
                     {% elif page_button >= page_obj.number|add:-2 and page_button <= page_obj.number|add:2  %}
-                        <a class='btn' style='background-color: #d1b200; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a>
+                        <a class='btn' style='background-color: #d1b200; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?{% custom_page_href page_button %}" role='button'>{{ page_button }}</a>
+                        <!-- <a class='btn' style='background-color: #d1b200; color: black; border-radius: 7px; margin-left: 2px; margin-right: 2px;' href="?page={{ page_button }}" role='button'>{{ page_button }}</a> -->
                     {% endif %}
                 {% endfor %}
             </div>
