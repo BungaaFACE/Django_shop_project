@@ -8,7 +8,10 @@
 {%endblock%}
 
 {% block top_label %}
-Блог <a class="btn" href="{% url 'add_entry' %}" role="button" style='border-radius: 13px; border: 2px solid #d1b200; color: white'>Добавить запись</a>
+Блог 
+{% if user.is_authenticated %}
+<a class="btn" href="{% url 'add_entry' %}" role="button" style='border-radius: 13px; border: 2px solid #d1b200; color: white'>Добавить запись</a>
+{% endif %}
 {%endblock%}
 
 {% block main_info %}
@@ -55,8 +58,10 @@
                         <p style='font-size: 15px'>Дата публикации: {{ entry.date_created }}</p>
                         <p style='font-size: 15px'>Просмотров: {{ entry.views_count }}</p>
                         <a class="btn btn-light" href="{% url 'list_entry' %}{{ entry.id }}" role="button">Подробнее</a>
-                        {% if user.is_authenticated %}
+                        {% if perms.blog.change_blogentry or user.is_superuser %}
                         <a class="btn btn-warning" href="{% url 'list_entry' %}{{ entry.id }}/update" role="button">Изменить</a>
+                        {% endif %}
+                        {% if perms.blog.delete_blogentry or user.is_superuser %}
                         <a class="btn btn-danger" href="{% url 'list_entry' %}{{ entry.id }}/delete" role="button">Удалить</a>
                         {% endif %}
                     </div>

@@ -23,10 +23,10 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     @staticmethod
-    def generate_token(check_additional=False):
+    def generate_token():
         token = get_random_string(length=30)
         try:
-            while User.objects.get(email_verification_token=token) or User.objects.get(reset_password_token=token) or token != check_additional:
+            while User.objects.get(email_verification_token=token) or User.objects.get(reset_password_token=token):
                 token = get_random_string(length=30)
         finally:
             return token
@@ -34,6 +34,4 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if self._state.adding:
             self.email_verification_token = self.generate_token()
-            self.reset_password_token = self.generate_token(
-                self.email_verification_token)
         return super().save(*args, **kwargs)

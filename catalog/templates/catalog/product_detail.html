@@ -28,7 +28,7 @@
             <h5>Цена: {{ product.unit_price }} руб.</h5>
             <h5>Дата создания: {{ product.date_created }}</h5>
             <h5>Дата последнего изменения: {{ product.date_last_modified }}</h5><br>
-            {% if user.is_authenticated %}
+            {% if perms.catalog.set_published or user.is_superuser or product.user == user %}
             <div class='col-6'>
                 <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}/update" role="button">Изменить</a>
             </div>

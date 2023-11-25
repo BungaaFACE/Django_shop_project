@@ -4,12 +4,14 @@ from blog.models import BlogEntry
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class EntryCreateView(CreateView):
+class EntryCreateView(PermissionRequiredMixin, CreateView):
     model = BlogEntry  # Модель
     form_class = EntryForm
     template_name = 'blog/add_blog_entry.html'
+    permission_required = "blog.add_blogentry"
 
     def post(self, request, *args, **kwargs):
         form = EntryForm(request.POST, request.FILES)
@@ -49,10 +51,11 @@ class EntryListView(ListView):
         return data
 
 
-class EntryUpdateView(UpdateView):
+class EntryUpdateView(PermissionRequiredMixin, UpdateView):
     model = BlogEntry
     form_class = EntryForm
     template_name = 'blog/update_blog_entry.html'
+    permission_required = "blog.change_blogentry"
 
     def form_valid(self, form):
         if form.is_valid():
@@ -64,7 +67,8 @@ class EntryUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class EntryDeleteView(DeleteView):
+class EntryDeleteView(PermissionRequiredMixin, DeleteView):
     model = BlogEntry
     success_url = reverse_lazy("list_entry")
     context_object_name = 'entry'
+    permission_required = "blog.delete_blogentry"

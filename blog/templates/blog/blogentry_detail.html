@@ -27,8 +27,10 @@
         <h5>{{ entry.entry_body|truncatechars:300 }}</h5>
         <p style='font-size: 15px'>Дата публикации: {{ entry.date_created }}</p>
         <p style='font-size: 15px'>Просмотров: {{ entry.views_count }}</p>
-        {% if user.is_authenticated %}
+        {% if perms.blog.change_blogentry or user.is_superuser %}
         <a class="btn btn-warning" href="{% url 'list_entry' %}{{ entry.id }}/update" role="button">Изменить</a>
+        {% endif %}
+        {% if perms.blog.delete_blogentry or user.is_superuser %}
         <a class="btn btn-danger" href="{% url 'list_entry' %}{{ entry.id }}/delete" role="button">Удалить</a>
         {% endif %}
     </div>
