@@ -5,9 +5,11 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from catalog.filters import ProductFilter
-from catalog.models import Product, ProductVersion
+from catalog.models import Category, Product, ProductVersion
 from catalog.forms import ProductFormAdmin, ProductFormModerator, ProductFormUser, ProductVersionForm
 from django_filters.views import FilterView
+
+from catalog.services import get_category_list
 
 
 class ProductDetailView(DetailView):
@@ -149,3 +151,13 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             formset.save()
 
         return super().form_valid(form)
+
+
+class CategoryListView(ListView):
+    model = Category
+    paginate_by = 6
+    context_object_name = 'categories'
+    # template_name = 'catalog/product_list.html'
+
+    def get_queryset(self):
+        return get_category_list()

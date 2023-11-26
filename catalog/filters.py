@@ -6,4 +6,4 @@ class ProductFilter(FilterSet):
 
     class Meta:
         model = Product
-        fields = ['is_published',]
+        fields = ['category_name', 'is_published',]

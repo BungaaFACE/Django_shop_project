@@ -11,20 +11,23 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from os import getenv
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+dot_env = os.path.join(BASE_DIR, '.env')
+load_dotenv(dotenv_path=dot_env)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k3^pf!mw$8@&a(%6he+l7*4wu6cs-0fm%w--9c@zsci9f&qgw+'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -84,9 +87,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bungaa_shop',
+        'NAME': os.getenv('POSTGRES_DB_NAME'),
         'USER': 'postgres',
-        'PASSWORD': getenv('POSTGRES_PASSWORD'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': 5432,
     }
@@ -151,10 +154,23 @@ LOGIN_URL = '/user/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 
 
-EMAIL_HOST_USER = getenv('TEST_EMAIL_LOGIN')
-EMAIL_HOST_PASSWORD = getenv('TEST_EMAIL_PASSWORD')
+EMAIL_HOST_USER = os.getenv('TEST_EMAIL_LOGIN')
+EMAIL_HOST_PASSWORD = os.getenv('TEST_EMAIL_PASSWORD')
+
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('CACHE_LOCATION'),
+        }
+    }
+
+print(EMAIL_HOST_USER)
+print(EMAIL_HOST_PASSWORD)

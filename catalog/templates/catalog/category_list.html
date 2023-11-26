@@ -3,50 +3,35 @@
 {% load custom_tags %}
 
 {% block title %}
-    <title>Каталог</title>
+    <title>Категории продуктов</title>
     <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
 {%endblock%}
 
 {% block top_label %}
-Каталог
+Категории продуктов
 {%endblock%}
 
 {% block main_info %}
-        {% if catalog %}
-            <div style='margin-bottom: 10px;font-size: 20px; margin-top: 0px;'>
-                <form method="get" class='row'>
-                    {% for field in filter.form %}
-                        {% if field.label != 'Опубликовано' or perms.catalog.set_published or user.is_superuser %}
-                        <div class="form-check form-check-reverse col-auto"  style='margin-top: 15px'>
-                            {{ field.label }}: {{ field }}
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary col-auto" style='margin: 10px'>Фильтр</button>
-                </form>
-            </div>
+        {% if categories %}
             <div class='row'>
-            {% for product in page_obj %}
+            {% for category in page_obj %}
                 <div class='product'>
                     <div style='height: 180px;'>
-                        <a href="{% url 'catalog' %}product/{{ product.id }}" style='color: white'>
-                            {% if product.product_img %}
+                        <a href="{% url 'catalog' %}?category_name={{ category.category_name }}" style='color: white'>
+                            {% if category.category_img %}
                             <div class='product_img'>
-                                <img src="{% mediapath product.product_img %}" alt="product_img">
+                                <img src="{% mediapath category.category_img %}" alt="product_img">
                             </div>
                             {% endif %}
                             <div class='product_name'>
-                                <h4>{{ product.product_name }}</h4>
+                                <h4>{{ category.category_name }}</h4>
                             </div>
                         </a>
                     </div>
 
                     <div class='product_desc'>
-                        <h6>{{ product.product_desc|truncatechars:100 }}</h6>
-                        <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}" role="button">Подробнее</a>
-                        {% if perms.catalog.set_published or user.is_superuser or product.user == user %}
-                        <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}/update" role="button">Изменить</a>
-                        {% endif %}
+                        <h6>{{ category.category_desc|truncatechars:100 }}</h6>
+                        <a class="btn btn-warning" href="{% url 'catalog' %}?category_name={{ category.category_name }}" role="button">Список продуктов</a>
                     </div>
                 </div>
             {% endfor %}
