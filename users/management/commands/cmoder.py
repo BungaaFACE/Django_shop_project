@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
 from users.models import User
+from django.contrib.auth.models import Group
 
 
 class Command(BaseCommand):
@@ -15,5 +16,7 @@ class Command(BaseCommand):
         )
 
         user.set_password('moder')
-        user.groups.add(1)  # id группы модераторов
+        group = Group.objects.get(name='Модератор')
+        group.user_set.add(user)
+        # user.groups.add(1)  # id группы модераторов
         user.save()
