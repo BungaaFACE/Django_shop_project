@@ -377,3 +377,65 @@ def send_mail_function():
         settings.EMAIL_HOST_USER,  # Почта, с которой отправлять письмо
         ['mail_to_send'] # Можно список или строку получателей
     )
+
+
+### Кэширование ###
+1. В настройки внести 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",  # бэкенд для обработки кеша и работы с хранилищем
+        "LOCATION": "redis://127.0.0.1:6379",  # месторасположение хранилища
+    }
+}
+
+Если на хранилице есть авторизация, то дополняем местоположение
+"LOCATION": "redis://login:password@127.0.0.1:6379"
+
+Брокер надо установить в систему тоже. Например sudo apt install redis
+
+2. В настройки внести CACHE_ENABLED=True --> включаем кэширование
+3. Активация кэширования для определенного объекта:
+# views.py или другой вспомогательный файл
+def cache_example():
+    if CACHE_ENABLED:  # Проверяем включенность кеша
+        key = f'students_list' # Создаем ключ для хранения
+        students_list = cache.get(key) # Пытаемся получить данные
+        if students_list is None:
+            # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
+            students_list = Student.objects.all()
+            cache.set(key, students_list)
+    else:
+        # Если кеш не был подключен, то просто обращаемся к БД
+        students_list = Student.objects.all()
+    # Возвращаем результат
+    return students_list
+
+Во CBV тоже самое, только в get_context_data/get_queryset
+
+## кэширование контроллера целиком ##
+# FBV — views.py
+@cache_page(60)
+def some_view(request):
+    return render(request, 'index.html')
+
+# CBV — urls.py
+path('', cache_page(60)(SomeView.as_view()))
+
+60 - время кэширования в секундах
+
+### Кэширование всего сайта (опасно) ###
+1. В настройках
+# settings.py
+MIDDLEWARE = [
+    "django.middleware.cache.UpdateCacheMiddleware",
+    ...
+    "django.middleware.cache.FetchFromCacheMiddleware",
+]
+2. Исключить контроллер из кеширования:
+# FBV — views.py
+@never_cache
+def some_view(request):
+    return render(request, 'index.html')
+
+# CBV — urls.py
+path('', never_cache(SomeView.as_view()))

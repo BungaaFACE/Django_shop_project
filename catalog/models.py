@@ -11,6 +11,8 @@ class Category(models.Model):
         max_length=150, verbose_name='категория', unique=True)
     category_desc = models.CharField(
         max_length=500, verbose_name='описание', **NULLABLE)
+    category_img = models.ImageField(
+        upload_to='category_img/', verbose_name='изображение категории', **NULLABLE)
 
     def __str__(self):
         return f'{self.category_name}'
