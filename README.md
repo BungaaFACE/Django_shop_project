@@ -35,6 +35,7 @@
 - Создать виртуальное окружение и войти в него.  
 - Установка зависимостей --> `pip install -r r.txt`  
 - Переименовать файл .env.tpl --> .env и заполнить его.
+- Создание БД --> `python manage.py migrate`  
 - Заполнение БД --> `python manage.py loaddata saved_data.json`
 - Включение рассылки --> `python manage.py crontab add`  
 ## Шаги реализации  
