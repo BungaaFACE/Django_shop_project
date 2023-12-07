@@ -1,0 +1,19 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+{% load render_table from django_tables2 %}
+
+{% block title %}
+    <title>Темплейты email</title>
+{%endblock%}
+
+{% block top_label %}
+Темплейты email
+{%endblock%}
+
+{% block main_info %}
+<div class='row'>
+    <a class="btn btn-primary" href="{% url 'create_templates' %}" role="button">Создать темплейт</a>
+</div><br>
+{% render_table table %}
+{%endblock%}

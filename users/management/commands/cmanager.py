@@ -7,16 +7,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         user = User.objects.create(
-            email='content@gmail.com',
-            first_name='content',
-            last_name='content',
+            email='manager@gmail.com',
+            first_name='manager',
+            last_name='manager',
             is_active=True,
-            is_staff=True,
+            is_staff=False,
             is_superuser=False,
         )
 
-        user.set_password('content')
-        group = Group.objects.get(name='Контент-менеджер')
+        user.set_password('manager')
+        group = Group.objects.get(name='Менеджер')
         group.user_set.add(user)
         # user.groups.add(2)
         user.save()

@@ -19,17 +19,6 @@
         {% if blog_entries %}
             {% for entry in page_obj %}
                 <div class='entry' style='weight: 80%; border-radius: 13px; border: 2px solid #d1b200; padding: 10px'>
-                    <div style='height: 20%;'>
-                        <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
-
-                            <div>
-                                <h4>{{ product.product_name }}</h4>
-                            </div>
-                        </a>
-                    </div>
-
-
-
 
                     {% if entry.entry_img %}
                     <div style='height: 380px; '>

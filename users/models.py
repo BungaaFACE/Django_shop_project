@@ -11,7 +11,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(_("почта"), max_length=254, unique=True)
     is_active = models.BooleanField(
-        _("верификация почты"), default=False)
+        _("активный аккаунт"), default=False)
     email_verification_token = models.CharField(
         _("токен для подтверждения почты"), max_length=30, unique=True)
 
