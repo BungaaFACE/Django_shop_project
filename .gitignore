@@ -2,4 +2,4 @@ venv
 *.pyc
 .vscode
 .env
-email_distribution/send_mails_log.log
+./email_distribution/send_mails_log.log
