@@ -8,6 +8,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('catalog/', include('catalog.urls')),
     path('user/', include('users.urls')),
+    path('email_distribution/', include('email_distribution.urls')),
     path('', include('main.urls'))
 ]
 

@@ -41,6 +41,8 @@ def verify_email_sent(request):
 
 
 def verify_email(request, token):
+    if token == 'blocked' or 'unblocked':
+        return render(request, 'main/404.html')
     try:
         user = User.objects.get(email_verification_token=token)
         user.is_active = True

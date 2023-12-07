@@ -1,6 +1,9 @@
+import random
 from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
+from blog.models import BlogEntry
+from email_distribution.models import Client, EmailSubscribtion
 from main.models import Contacts
 
 
@@ -16,6 +19,27 @@ def test_http_response(request):
 
 def test_include(request):
     return render(request, 'main/test_include.html')
+
+
+def index(request):
+    page_data = dict()
+
+    page_data['sub_sum'] = EmailSubscribtion.objects.count()
+    page_data['active_sub_sum'] = EmailSubscribtion.objects.filter(
+        is_enabled='enabled').count()
+    page_data['client_sum'] = Client.objects.count()
+
+    # Get 3 random blog entries
+    blogentries_pk = list(BlogEntry.objects.filter(
+        is_published=True).values_list('pk', flat=True))
+    if len(blogentries_pk) <= 3:
+        page_data['blog_entries'] = BlogEntry.objects.filter(is_published=True)
+    else:
+        random.shuffle(blogentries_pk)
+        page_data['blog_entries'] = BlogEntry.objects.\
+            filter(is_published=True, pk__in=blogentries_pk[:3])
+
+    return render(request, 'main/index.html', page_data)
 
 
 def contacts(request):

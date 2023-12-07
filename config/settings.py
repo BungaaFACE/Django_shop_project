@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'blog',
     'catalog',
     'users',
+    'email_distribution',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'django_tables2',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -155,8 +158,8 @@ LOGIN_URL = '/user/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 
 
 EMAIL_HOST_USER = os.getenv('TEST_EMAIL_LOGIN')
@@ -172,5 +175,7 @@ if CACHE_ENABLED:
         }
     }
 
-print(EMAIL_HOST_USER)
-print(EMAIL_HOST_PASSWORD)
+
+CRONJOBS = [
+    ('*/5 * * * *', 'email_distribution.services.start_distribution_task')
+]

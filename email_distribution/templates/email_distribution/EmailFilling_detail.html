@@ -1,0 +1,29 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+    <title>Детали темплейта</title>
+    <link rel="stylesheet" href="{% static 'main/catalog.css' %}">
+{%endblock%}
+
+{% block top_label %}
+Детали темплейта
+{%endblock%}
+
+{% block main_info %}
+    <div class='product_desc'>
+        <div class='card' style='background-color: #1d1d1d; padding: 13px; margin: 7px; color: white; border: 2px solid #ffd900'>
+            <h5>Название темплейта: {{ object.email_template_name }}</h5>
+            <hr>
+            <h6>Тема письма: {{ object.email_subject }}</h6>
+            <h6>Содержание письма: {{ object.email_body }}</h6>
+            {% if user.is_superuser or object.user == user %}
+            <div class='col-6'>
+                <a class="btn btn-warning" href="{% url 'update_templates' object.pk %}" role="button">Изменить</a>
+                <a class="btn btn-danger" href="{% url 'delete_templates' object.pk %}" role="button">Удалить</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{%endblock%}

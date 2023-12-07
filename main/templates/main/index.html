@@ -12,27 +12,76 @@
 {%endblock%}
 
 {% block main_info %}
-    {% if catalog %}
-        {% for product in catalog %}
-            <div class='product'>
-                <div style='height: 180px;'>
-                    <a href="{% url 'catalog' %}product/{{ product.id }}" style='color: white'>
-                        {% if product.product_img %}
-                        <div class='product_img'>
-                            <img src="{% mediapath product.product_img %}" alt="product_img">
-                        </div>
-                        {% endif %}
-                        <div class='product_name'>
-                            <h4>{{ product.product_name }}</h4>
-                        </div>
-                    </a>
+            <center>
+            <div class='row' style='border: 1px solid #ebc803; border-radius: 5px; margin-bottom: 10px; width: 75%; background: #292929;'>
+
+                <div style='padding: 8px; width: 33%; height: 100px; float: left;'>
+                    <center><h4>Всего рассылок:</h4></center>
+                    <center><h2>{{ sub_sum }}</h2></center>
                 </div>
 
-                <div class='product_desc'>
-                    <h6>{{ product.product_desc|truncatechars:100 }}</h6>
-                    <a class="btn btn-warning" href="{% url 'catalog' %}product/{{ product.id }}" role="button">Подробнее</a>
+
+                <div style='padding: 8px; width: 33%; height: 100px; float: left; border-left: 1px solid #ebc803; border-right: 1px solid #ebc803'>
+                    <center><h4>Активных рассылок:</h4></center>
+                    <center><h2>{{ active_sub_sum }}</h2></center>
                 </div>
+
+                <div style='padding: 8px; width: 33%; height: 100px; float: left;'>
+                    <center><h4>Уникальных клиентов:</h4></center>
+                    <center><h2>{{ client_sum }}</h2></center>
+                </div>
+
+
             </div>
-        {% endfor %}
-    {% endif %}
+            </center>
+
+
+
+
+
+
+        <p>Случайные записи из блога</p>
+        {% if blog_entries %}
+            {% for entry in blog_entries %}
+                <div class='entry' style='weight: 80%; border-radius: 13px; border: 2px solid #d1b200; padding: 10px; margin-bottom: 8px;'>
+
+                    {% if entry.entry_img %}
+                    <div style='height: 380px; '>
+                        <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
+                            <div class='entry_name'>
+                                <h4>{{ entry.entry_title }}</h4>
+                            </div>
+                            <div style='height: 180px;'>
+                                <img src="{% mediapath entry.entry_img %}" alt="product_img" style='max-height: 340px;'>
+                            </div>
+
+                        </a>
+                    </div>
+                    {% else %}
+                    <div style='height: 40px; '>
+                        <a href="{% url 'list_entry' %}{{ entry.id }}" style='color: white'>
+                            <div class='entry_name'>
+                                <h4>{{ entry.entry_title }}</h4>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <div class='entry_desc'>
+                        <h5>{{ entry.entry_body|truncatechars:300 }}</h5>
+                        <p style='font-size: 15px'>Дата публикации: {{ entry.date_created }}</p>
+                        <p style='font-size: 15px'>Просмотров: {{ entry.views_count }}</p>
+                        <a class="btn btn-light" href="{% url 'list_entry' %}{{ entry.id }}" role="button">Подробнее</a>
+                        {% if perms.blog.change_blogentry or user.is_superuser %}
+                        <a class="btn btn-warning" href="{% url 'list_entry' %}{{ entry.id }}/update" role="button">Изменить</a>
+                        {% endif %}
+                        {% if perms.blog.delete_blogentry or user.is_superuser %}
+                        <a class="btn btn-danger" href="{% url 'list_entry' %}{{ entry.id }}/delete" role="button">Удалить</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+        <p>Блог пока пуст:(</p>
+        {% endif %}
 {%endblock%}
