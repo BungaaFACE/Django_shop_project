@@ -34,9 +34,15 @@ class EmailSubscribtionFormAdmin(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['time'].widget = forms.widgets.TimeInput(
             attrs={'type': 'time'})
+        client = forms.ModelMultipleChoiceField(
+            queryset=Client.objects.all(),
+            widget=forms.CheckboxSelectMultiple,
+            required=True)
 
         for field_name, field in self.fields.items():
+            # if field_name != 'client':
             field.widget.attrs['class'] = 'form-control'
+            
 
 
 class EmailSubscribtionFormUser(EmailSubscribtionFormAdmin):

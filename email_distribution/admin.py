@@ -20,7 +20,7 @@ class EmailFillingAdmin(admin.ModelAdmin):
 
 @admin.register(EmailSubscribtion)
 class EmailSubscribtionAdmin(admin.ModelAdmin):
-    list_display = ('client', 'periodic_time', 'email_filling',
+    list_display = ('periodic_time', 'email_filling',
                     'status', 'next_send_date', 'user')
     list_filter = ('periodic_time', 'status', 'user')
     search_fields = ('client', 'email_filling')

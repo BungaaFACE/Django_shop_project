@@ -48,8 +48,7 @@ STATUS_CHOICES = (('in_progress', 'В работе'),
                     ('idle', 'Ожидание'),)
 class EmailSubscribtion(models.Model):
     time = models.TimeField(verbose_name='время рассылки')
-    client = models.ForeignKey(
-        Client, verbose_name="клиент", on_delete=models.CASCADE)
+    client = models.ManyToManyField(Client, verbose_name=_("клиент"))
     email_filling = models.ForeignKey(
         EmailFilling, verbose_name="наполнение письма", on_delete=models.CASCADE)
     periodic_time = models.CharField(
