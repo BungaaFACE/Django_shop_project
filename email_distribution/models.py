@@ -39,28 +39,25 @@ class EmailFilling(models.Model):
         verbose_name_plural = 'наполнения писем'
 
 
+PERIODIC_TIME_CHOICES = (('daily', 'Ежедневно'),
+                        ('weekly', 'Еженедельно'),
+                        ('monthly', 'Ежемесячно'),)
+IS_ENABLED_CHOICES = (('enabled', 'Включить'),
+                    ('disabled', 'Выключено'),)
+STATUS_CHOICES = (('in_progress', 'В работе'),
+                    ('idle', 'Ожидание'),)
 class EmailSubscribtion(models.Model):
     time = models.TimeField(verbose_name='время рассылки')
     client = models.ForeignKey(
         Client, verbose_name="клиент", on_delete=models.CASCADE)
     email_filling = models.ForeignKey(
         EmailFilling, verbose_name="наполнение письма", on_delete=models.CASCADE)
-
-    periodic_time_choices = (('daily', 'Ежедневно'),
-                             ('weekly', 'Еженедельно'),
-                             ('monthly', 'Ежемесячно'),)
     periodic_time = models.CharField(
-        verbose_name='периодичность', choices=periodic_time_choices, max_length=100)
-
-    is_enabled_choices = (('enabled', 'Включить'),
-                          ('disabled', 'Выключено'),)
+        verbose_name='периодичность', choices=PERIODIC_TIME_CHOICES, max_length=100)
     is_enabled = models.CharField(
-        verbose_name='Включить рассылку', choices=is_enabled_choices, max_length=50)
-
-    status_choices = (('in_progress', 'В работе'),
-                      ('idle', 'Ожидание'),)
+        verbose_name='Включить рассылку', choices=IS_ENABLED_CHOICES, max_length=50)
     status = models.CharField(
-        verbose_name='статус рассылки', default='idle', choices=status_choices, max_length=50)
+        verbose_name='статус рассылки', default='idle', choices=STATUS_CHOICES, max_length=50)
     next_send_date = models.DateField(
         verbose_name='дата следующей отправки', auto_now_add=True, **NULLABLE)
     user = models.ForeignKey(User, verbose_name=_("создатель рассылки"),

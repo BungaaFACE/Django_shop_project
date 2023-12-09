@@ -6,6 +6,8 @@ from pytils.translit import slugify
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
+from blog.services import get_blog_list
+
 
 class EntryCreateView(PermissionRequiredMixin, CreateView):
     model = BlogEntry  # Модель
@@ -46,8 +48,7 @@ class EntryListView(ListView):
 
     def get_queryset(self):
         # data =  super().get_queryset()
-        data = BlogEntry.objects.filter(
-            is_published=True).order_by('-date_created')
+        data = get_blog_list()
         return data
 
 
