@@ -4,6 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from django_tables2 import SingleTableView
 from email_distribution.models import Client, EmailFilling, EmailSubscribtion
+from email_distribution.permissions import is_creator, is_manager, is_su
 from email_distribution.tables import ClientTable, EmailFillingTable, EmailSubscribtionTable, UserTable
 from email_distribution.forms import (ClientForm,
                                       EmailFillingForm,
@@ -16,16 +17,7 @@ from django.contrib.auth.decorators import user_passes_test
 from users.models import User
 
 
-def is_manager(user):
-    return user.groups.filter(name='Менеджер').exists()
 
-
-def is_creator(creator, user):
-    return creator == user
-
-
-def is_su(user):
-    return user.is_superuser
 
 
 def email_distribution_menu(request):
