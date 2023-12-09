@@ -58,9 +58,9 @@ class EmailSubscribtionTable(tables.Table):
     class Meta:
         model = EmailSubscribtion
         template_name = "django_tables2/bootstrap5.html"
-        fields = ("client", 'periodic_time', 'time', 'email_filling', 'status')
+        fields = ('email_filling', 'periodic_time', 'time', 'status')
         attrs = {"class": "table table-striped table-dark table-hover table-sm",
                  "style": "color: white; font-size: 18px"}
 
-    def render_client(self, value, record):
+    def render_email_filling(self, value, record):
         return format_html('<a href="{}" role="button">{}</a>', reverse("distributions_detail", args=(record.pk,)), value)

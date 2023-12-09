@@ -205,7 +205,10 @@ class EmailSubscribtionUpdateView(LoginRequiredMixin, UserPassesTestMixin, Updat
         if is_su(self.request.user):
             return EmailSubscribtionFormAdmin
         if is_creator(self.get_object().user, self.request.user):
-            return EmailSubscribtionFormUser
+            modelform = EmailSubscribtionFormUser
+            modelform.base_fields['client'].limit_choices_to = {
+                'user': self.request.user}
+            return modelform
         elif is_manager(self.request.user):
             return EmailSubscribtionFormManager
 
