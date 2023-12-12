@@ -67,7 +67,6 @@ def start_distribution_task():
         log.subscription = distribution
         log.last_try_date = datetime.now()
         log.is_success = bool(sending_result)
-        logging.warning(sending_errors)
         # Если есть smtp ошибки - добавляем их в лог
         if sending_errors:
             log.last_mail_response = sending_errors
